@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+
+{% block title %}REPORTS{% endblock %}
+
+{% block content %}
+<!--Cards-->
+<div class="row">
+    <div class="col-3">
+        {% for total_books in tot_available_qty%}
+        <div class="card text-white bg-dark mb-4 h-100">
+            <div class="card-header" align="center">Total Quantity</div>
+            <div class="card-body">
+                {% if total_books.total_quantity%}
+                <p class="card-text text-white" align="center">{{total_books.total_quantity}}</p>
+                {% else %}
+                <p class="card-text text-white" align="center"></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card text-white bg-dark mb-4 h-100">
+            <div class="card-header" align="center">Available Quantity</div>
+            <div class="card-body">
+                {% if total_books.available_quantity%}
+                <p class="card-text text-white" align="center">{{total_books.available_quantity}}</p>
+                {% else %}
+                <p class="card-text text-white" align="center"></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="col-3">
+        <div class="card text-white bg-dark mb-4 h-100">
+            <div class="card-header" align="center">Highest Rating Book Title</div>
+            <div class="card-body">
+                {% for rating in highest_rating %}
+                    {% if rating.title %}
+                    <p class="card-text text-white" align="center">{{rating.title}}</p>
+                    {% else %}
+                    <p class="card-text text-white" align="center"></p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card text-white bg-dark mb-4 h-100">
+            <div class="card-header" align="center">Highest Paying Member</div>
+            <div class="card-body">
+                {% for member in highest_paying_members%}
+                {% if member %}
+                <p class="card-text text-white" align="center">{{member[0]}} - {{member[1]}}</p>
+                {% else %}
+                <p class="card-text text-white" align="center"></p>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div><br>
+
+
+<!--Content-->
+<div class="jumbotron">
+    <form action='' method = "POST">
+        <div class="container">
+            <div class="row">
+                <div class="col-3">
+                    <h4>POPULAR BOOKS</h4>
+                </div>
+                <div class="col-9">
+                    <button type="submit" class="btn btn-outline-secondary float-right">Download <i class="fa fa-download" aria-hidden="true"></i></button>
+                </div>
+            </div>
+        </div><hr><br>
+    </form>
+    {% if results %}
+    <table class="table table-striped">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Author</th>
+            <th scope="col">Average Rating</th>
+            <th scope="col">Available Quantity</th>
+            <th scope="col">Total Quantity</th>
+        </tr>
+        </thead>
+        {% for data in results %}
+        <tr>
+            <td>{{data['title']}}</td>
+            <td>{{data['authors']}}</td>
+            <td>{{data['average_rating']}}</td>
+            <td>{{data['available_quantity']}}</td>
+            <td>{{data['total_quantity']}}</td>
+        </tr>
+        {% endfor %}
+    </table><br>
+    <a href="/books/1" class="btn btn-outline-dark btn-lg btn-block" type="button">Browse All Books</a>
+    {% endif%}
+</div>
+
+{% endblock %}

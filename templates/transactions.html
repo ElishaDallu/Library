@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block title %}All Members{% endblock %}
+
+{% block content %}
+
+<div class="jumbotron">
+      <div class="row">
+                  <div class="col-3">
+                      <h3>TRANSACTIONS</h3>
+                  </div>
+      </div><hr><br>
+    {% if transactions_data %}
+        <table style="width:100%" class="table table-stripe">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Book ID</th>
+                <th scope="col">Member Name</th>
+                <th scope="col">Status</th>
+                <th scope="col">Issue Date</th>
+                <th scope="col">Return Date</th>
+                <th scope="col">Issued for Days</th>
+                <th scope="col">Rent</th>
+            </tr>
+            </thead>
+            {% for transaction in transactions_data.items %}
+                <tr>
+                    <td>{{ transaction['id'] }}</td>
+                    <td>{{ transaction['book_id'] }}</td>
+                    <td>{{ transaction['member_fname'] }} &nbsp; {{ transaction['member_lname'] }}</td>
+                    <td>{{ transaction['status'] }}</td>
+                    <td>{{ transaction['issue_date'].strftime('%d-%m-%Y') }}</td>
+                    {% if transaction['return_date'] %}
+                        <td>{{transaction['return_date'].strftime('%d-%m-%Y') }}</td>
+                    {% else %}
+                        <td>-</td>
+                    {% endif %}
+
+                    {% if transaction['issued_for_days'] %}
+                        <td>{{ transaction['issued_for_days'] }}</td>
+                    {% else %}
+                        <td>-</td>
+                    {% endif %}
+
+                    {% if transaction['rent'] %}
+                        <td>{{ transaction['rent'] }}</td>
+                    {% else %}
+                        <td>-</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+
+        <div class="text-right">
+            {% for page in transactions_data.iter_pages(left_edge=3, right_edge=3, left_current=3, right_current=3) %}
+                {% if page %}
+
+                <a class="btn btn-outline-dark btn-sm" href="{{ url_for('transactions', page_num=page) }}">{{ page }}</a>
+                {% else %}
+                ...
+                {% endif %}
+            {% endfor %}
+            <p class="text-right mt-3">
+                Showing page {{ transactions_data.page }} of {{ transactions_data.pages }}
+            </p>
+        </div>
+    {% else %}
+    <h3 align="center">No Transactions yet!</h3>
+    {% endif %}
+</div>
+
+
+
+{% endblock %}

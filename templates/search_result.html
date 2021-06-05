@@ -1,0 +1,151 @@
+{% extends "layout.html" %}
+
+{% block title %}SEARCH RESULTS{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+        <br>
+        <div class="container">
+
+            <div class="row">
+                <div class="col-sm-4">
+                    <h3>RESULTS</h3>
+                </div>
+            </div><hr><br>
+                <form action="" method = "POST">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-5">
+                                <input type="text" class="form-control float-right" name="title" placeholder="Book Name">
+                            </div>
+                            <div class="col-5">
+                                <input type="text" class="form-control float-right" name="authors" placeholder="Author Name">
+                            </div>
+                            <div class="col-2">
+                                <a href="/search_result/{{ title }}/{{ authors }}"> <input type="Submit" value="Search" class="btn btn-outline-primary float-right"></a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+        </div><br>
+    {% if search_result %}
+    <table class="table table-striped">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Author</th>
+            <th scope="col">Total Quantity</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        {% for book in search_result %}
+        <tr>
+            <td>{{book['id']}}</td>
+            <td>{{book['title']}}</td>
+            <td>{{book['authors']}}</td>
+            <td>{{book['total_quantity']}}</td>
+            <td>
+                <div class="btn-group dropright">
+                    <button type="button" class="btn btn-outline-secondary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                      <div class="dropdown-menu">
+                        <!-- Dropdown menu links -->
+                          <a href="/update_book/{{book['id']}}" type="submit" class="dropdown-item"  data-toggle="modal" data-target="#EditSearchBookModal{{book['id']}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
+                          <a href="/delete_book/{{book['id']}}" type="submit" class="dropdown-item"  data-toggle="modal" data-target="#DeleteBookModal{{book['id']}}"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</a>
+                      </div>
+                </div>
+            </td>
+        </tr>
+
+        <!-- Edit Book Modal -->
+        <div class="modal fade" id="EditSearchBookModal{{book['id']}}" tabindex="-1" role="dialog" aria-labelledby="EditSearchBookModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="EditSearchBookModalLabel">EDIT BOOK</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div><br>
+
+                    <div class="container">
+                        <form action="/update_book/{{book['id']}}" method = "POST">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" class="form-control" name=title value="{{book.title}}">
+
+                                <label>Author</label>
+                                <input type="text" class="form-control" name="authors" value="{{book.authors}}">
+
+                                <label>Quantity</label>
+                                <input type="number" min="1" class="form-control" name="total_quantity" value="{{book.total_quantity}}">
+                            </div>
+
+                            <div class="modal-footer">
+                                <br>
+                                <a href=""> <input type="Submit" class="btn btn-outline-primary btn-sm"></a>
+                                <a href="/books/1" type="button" class="btn btn-outline-secondary btn-sm">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Book Modal -->
+        <div class="modal fade" id="DeleteBookModal{{book['id']}}" tabindex="-1" role="dialog" aria-labelledby="DeleteBookModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="DeleteBookModalLabel">DELETE BOOK</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div><br>
+
+                            <form action="/delete_book/{{book['id']}}" method = "POST">
+                                <div class="container">
+                                    <div class="jumbotron">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col">
+                                                    Book ID:
+                                                </div>
+                                                <div class="col mb-4">
+                                                    {{book['id']}}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    Book Title:
+                                                </div>
+                                                <div class="col mb-4">
+                                                    {{book['title']}}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    Book Author:
+                                                </div>
+                                                <div class="col">
+                                                    {{book['authors']}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a href="#"><input type="submit" class="btn btn-danger btn-sm" value="Delete"></a>
+                                        <a href="/books/1"><button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button></a>
+                                    </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+        {% endfor %}
+    </table>
+    {% endif %}
+</div>
+{% endblock %}

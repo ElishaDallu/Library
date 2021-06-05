@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+<br><div class="jumbotron">
+  <div class="container">
+      <div>
+          <h1 align="center">LIBRARY MANAGEMENT</h1><hr>
+          <p class="mt-5">
+              A web application to ease librarian's work.<br> This library management system allows a librarian to track books and their quantity, books issued to members, book fees.
+          </p>
+      </div><br>
+      <p>This application allows:</p>
+      <ul>
+          <li>Librarian to perform general <b>create, update, read, delete</b> operations on Books and Members.</li>
+          <li>Issue a book to a member.</li>
+          <li>Issue a book return from a member.</li>
+          <li>Search for a book by name and author.</li>
+          <li>Charge a rent fee on book returns. </li>
+          <li>Doesn't allows a member to issue books if outstanding debt is more than Rs.500</li>
+      </ul>
+      <br>
+      <p>Also providing librarian's an option to import books using Frappe API & download our pdf report.</p>
+      <p align="left" style="color:red;">Note:This is a sample project of Library Management developed for Frappe.</p>
+
+      <!-- <div class="text-muted">
+          &#169; Elisha Dallu
+      </div> -->
+  </div>
+</div>
+
+
+{% endblock %}

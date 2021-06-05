@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}Return Book Data{% endblock %}
+
+
+{% block content %}
+
+
+<form action="/confirm_return" method="POST">
+    {% if data %}
+    <br>
+    <h4>Books issued by {{member_fname}} {{member_lname}}</h4>
+    <br>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Author</th>
+            <th scope="col">Total Cost</th>
+        </tr>
+      </thead>
+      {% for book in data %}
+        <tr>
+            <td><input type="checkbox" name="chk_bx" value="{{book['id']}}"></td>
+            <td>{{book['id']}}</td>
+            <td>{{book['title']}}</td>
+            <td>{{book['authors']}}</td>
+            <td>{{book['rent']}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <button type="submit" class="btn btn-outline-primary btn-sm">Pay & Submit</button>
+    {% else %}
+    <h2 class="jumbotron" align="center">No Books Issued!</h2>
+    {% endif %}
+</form>
+
+
+
+{% endblock %}

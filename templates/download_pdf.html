@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Library Management - download_pdf</title>
+
+    <style>
+    table, th, td {
+    border: 1px solid black;
+    }
+    th, td {
+      padding: 15px;
+    }
+    </style>
+
+</head>
+<body>
+<h2>REPORTS:</h2><hr>
+{% block content %}
+
+<!--Content-->
+<div class="jumbotron">
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <h4><u>POPULAR BOOKS</u></h4>
+            </div>
+        </div>
+    </div><br>
+    {% if results %}
+    <table>
+        <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Author</th>
+            <th scope="col">Average Rating</th>
+            <th scope="col">Available Quantity</th>
+            <th scope="col">Total Quantity</th>
+        </tr>
+        {% for data in results %}
+        <tr>
+            <td>{{data['title']}}</td>
+            <td>{{data['authors']}}</td>
+            <td>{{data['average_rating']}}</td>
+            <td>{{data['available_quantity']}}</td>
+            <td>{{data['total_quantity']}}</td>
+        </tr>
+        {% endfor %}
+    </table><br>
+    {% endif %}
+</div>
+
+<!--Highest Paying Member-->
+<div class="jumbotron">
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <h4><u>HIGHEST PAYING MEMBERS</u></h4>
+            </div>
+        </div>
+    </div><hr><br>
+    {% if highest_paying_members %}
+        <table>
+            <tr>
+                <th scope="col">Member Name</th>
+                <th scope="col">Total Rent</th>
+            </tr>
+            {% for member in highest_paying_members%}
+            <tr>
+                <td>{{member[0]}}</td>
+                <td>{{member[1]}}</td>
+            </tr>
+            {% endfor %}
+        </table><br>
+    {% endif %}
+</div>
+
+
+{% endblock %}
+
+</body>
+</html>

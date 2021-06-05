@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css', _external=True) }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!--    favicon link-->
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png">
+
+
+
+<!--   restrict back button in browser-->
+   <script type="text/javascript">
+       window.history.forward();
+       function noBack() {
+           window.history.forward();
+       }
+    </script>
+
+
+    {% if title %}
+        <title>Library Management - {{ title }}</title>
+    {% else %}
+        <title>Library Management</title>
+    {% endif %}
+
+</head>
+
+
+<body>
+    <header class="site-header">
+      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+        <div class="container">
+          <a class="navbar-brand mr-4" href="/">Library Management</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+
+
+<!--                Navbar Left Side-->
+            <!-- <div class="collapse navbar-collapse" id="navbarToggle"> -->
+                <!-- <div class="navbar-nav mr-auto">
+                    <div class="btn-group">
+                       <a class="nav-item nav-link" href="{{ url_for('issue_book') }}">Issue Book</a>-->
+                       <!-- <a class="nav-item nav-link" href="/return_book" type="submit" data-toggle="modal" data-target="#ReturnBookModal"> Return Book</a> -->
+                    <!-- </div> -->
+                <!-- </div>  -->
+
+
+<!--                Navbar Right Side -->
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link" href="/books/1" type="button">Books</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="BookNavbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="/import_books">Import Books</a>
+                            </div>
+                        </li>
+                    <a class="nav-item nav-link" href="{{ url_for('transactions', page_num=1) }}">Transactions</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="TransactionNavbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <!--                                <a class="dropdown-item" href="/import_books">Import Books</a>-->
+                            <a class="dropdown-item" href="/issue_book">Issue Book</a>
+                            <a class="dropdown-item" href="/return_book" type="submit" data-toggle="modal" data-target="#ReturnBookModal"> Return Book</a>
+                        </div>
+                    </li>
+                    <a class="nav-item nav-link" href="{{ url_for('members', page_num=1) }}">Members</a>
+                    <a class="nav-item nav-link" href="{{ url_for('about') }}">About</a>
+                </div>
+            </div>
+        </div>
+      </nav>
+    </header>
+
+<!--    main-->
+    <main role="main" class="container">
+        <div class="row">
+            <div class="col-md-12">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            {% if category == 'error' %}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% endif%}
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+              {% block content %}{% endblock %}
+            </div>
+          </div>
+
+
+        <!--Return Book Modal -->
+        <div class="modal fade" id="ReturnBookModal" tabindex="-1" role="dialog" aria-labelledby="ReturnBookModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ReturnBookModalLabel">Return Book</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/return_book" method = "POST">
+
+                            <div class="container">
+                                <div class="row">
+
+                                  <div class="col-sm-10">
+                                        <div class="row">
+                                            <label>First Name</label>
+                                            <input type="text" class="form-control" name="member_fname" placeholder="First Name" autocomplete="off" required>
+
+                                            <label>Last Name</label>
+                                            <input type="text" class="form-control" name="member_lname" placeholder="Last Name" autocomplete="off" required>
+
+                                            <div class="modal-footer">
+                                                <a href=""> <input type="Submit" value="List Issued Books" class="btn btn-outline-primary btn-sm"></a>&nbsp;
+                                                <a href="/books/1" type="button" class="btn btn-outline-secondary btn-sm">Cancel</a>
+                                            </div>
+                                        </div><hr>
+                                  </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Import Book Modal -->
+        <div class="modal fade" id="ImportBookModal" tabindex="-1" role="dialog" aria-labelledby="ImportBookModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="ImportBookModalLabel">Import Book</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/import_book" method = "POST">
+
+                                    <div class="container">
+                                        <div class="row">
+
+                                          <div class="col-sm-10">
+                                                <div class="row">
+                                                    <h4><label>Import All Books?</label></h4>
+
+                                                    <a href=""> <input type="Submit" value="Import" class="btn btn-outline-primary btn-sm"></a>&nbsp;
+                                                    <a href="/books/1" type="button" class="btn btn-outline-secondary btn-sm">Cancel</a>
+                                                    <small class="form-text text-muted">NOTE: This might take a moment.</small>
+                                                </div><hr>
+                                          </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </main>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+
+</html>

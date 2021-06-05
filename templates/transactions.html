@@ -27,7 +27,11 @@
             {% for transaction in transactions_data.items %}
                 <tr>
                     <td>{{ transaction['id'] }}</td>
+                    {% if transaction['book_id'] %}
                     <td>{{ transaction['book_id'] }}</td>
+                    {% else %}
+                    <td>-</td>
+                    {% endif %}
                     <td>{{ transaction['member_fname'] }} &nbsp; {{ transaction['member_lname'] }}</td>
                     <td>{{ transaction['status'] }}</td>
                     <td>{{ transaction['issue_date'].strftime('%d-%m-%Y') }}</td>

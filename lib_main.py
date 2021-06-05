@@ -30,8 +30,8 @@ def create_table():
 
 # --------xx Book routes xx--------
 @celery.task()
-@app.route('/', methods=['GET'])
-@app.route('/download', methods=['POST'])
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/download', methods=['GET', 'POST'])
 def reports():
     results = db.engine.execute(text(
         "SELECT  id, title, authors, average_rating, available_quantity, total_quantity FROM Book WHERE is_valid==True ORDER BY average_rating DESC LIMIT 20"))
@@ -152,7 +152,6 @@ def import_all_books():
     page = 1
     data = True
     while data:
-        print(page)
         returned_books_from_func = import_book('', '', '', '', page, 1)
         if len(returned_books_from_func) > 0:
             page = page + 1
@@ -237,8 +236,7 @@ def add_book():
         title = request.form['title'].strip()
         authors = request.form['authors'].strip()
         total_quantity = request.form['total_quantity']
-        book = Book.query.filter_by(is_valid=True).ilter_by(title=title).filter_by(authors=authors).first()
-        print('hello')
+        book = Book.query.filter_by(is_valid=True).filter_by(title=title).filter_by(authors=authors).first()
         if book:
             book.quantity = int(book.total_quantity) + int(request.form['total_quantity'])
             db.session.commit()
@@ -282,11 +280,15 @@ def update_book(id):
 
 @app.route('/delete_book/<id>', methods=['GET', 'POST'])
 def delete_book(id):
+    issued_book = Transaction.query.filter_by(book_id=id).filter_by(status='issued').first()
     book = Book.query.filter_by(id=id).first()
     if request.method == 'GET':
         return render_template('delete_book.html', book=book, title='Delete Book')
     if request.method == 'POST':
-        if book:
+        if issued_book:
+            flash('Cannot perform operation as book is issued to a member!', category='error')
+            return redirect(url_for('books', page_num=1))
+        else:
             db.session.delete(book)
             db.session.commit()
             flash('Book data deleted successfully!', category='error')
@@ -475,10 +477,14 @@ def update_member(id):
 @app.route('/delete_member/<id>', methods=['GET', 'POST'])
 def delete_member(id):
     member = Member.query.filter_by(id=id).first()
+    member_with_issued_book = Transaction.query.filter_by(member_id=id).filter_by(status='issued').first()
     if request.method == 'GET':
         return render_template('delete_member.html', member=member, title='Delete member')
     if request.method == 'POST':
-        if member:
+        if member_with_issued_book:
+            flash('Cannot perform operation as member has issued book', category='error')
+            return redirect(url_for('members', page_num=1))
+        else:
             db.session.delete(member)
             db.session.commit()
             flash('Member data deleted successfully!', category='error')
@@ -498,7 +504,6 @@ def transactions(page_num):
                                                                                                        Transaction.rent).paginate(
         per_page=20, page=page_num)
     if transactions_data:
-        print(type(transactions_data))
         return render_template('transactions.html', transactions_data=transactions_data)
 
 
@@ -508,5 +513,4 @@ def about():
     return render_template('about.html', title='About')
 
 
-
-app.run()
+app.run(debug=True)

@@ -23,8 +23,8 @@
       <div class="form-row">
       <div class="form-group col-md-6">
           <label>Book Name</label>
-          <select id="book_name" name="title_id" class="form-control" searchable="Search here..">
-              <option value="" disabled selected>Book Name</option>
+          <select id="book_name" name="title_id" class="form-control" searchable="Search here.." required>
+              <option value="" disabled selected>Book Name...</option>
               {% for book in books%}
               <option value="{{book.id}}">{{book.title}}</option>
               {% endfor %}
@@ -33,8 +33,8 @@
 
       <div class="form-group col-md-6">
           <label>Author Name</label>
-          <select id="author_name" name="authors_id" class="form-control" searchable="Search here..">
-              <option value="" disabled selected>Author Name</option>
+          <select id="author_name" name="authors_id" class="form-control" searchable="Search here.." required>
+              <option value="" disabled selected>Author Name...</option>
               {% for book in books%}
               <option value="{{book.id}}">{{book.authors}}</option>
               {% endfor %}

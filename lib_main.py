@@ -419,7 +419,7 @@ def confirm_return():
                 book.available_quantity = book.available_quantity + 1
                 db.session.commit()
 
-            flash('Book is been returned, Thank you...')
+            flash('Book has been returned, Thank you...')
             return redirect(url_for('books', page_num=1))
 
 

@@ -46,8 +46,13 @@ def reports():
         "SELECT (SELECT member_fname FROM member WHERE id=member_id) as member_fame, SUM(rent) as rent FROM \"transaction\" WHERE status = 'returned' GROUP BY member_id ORDER BY rent DESC LIMIT 3"))
 
     if request.method == 'GET':
-        return render_template('reports.html', results=results, highest_rating=highest_rating,
-                               tot_available_qty=tot_available_qty, highest_paying_members=highest_paying_members)
+        if reports is None:
+            return render_template('reports.html', results=results, highest_rating=highest_rating,
+                                   tot_available_qty=tot_available_qty, highest_paying_members=highest_paying_members)
+        else:
+            flash('Nothing here!', category='error')
+            return render_template('reports.html', results=results, highest_rating=highest_rating,
+                                   tot_available_qty=tot_available_qty, highest_paying_members=highest_paying_members)
     elif request.method == 'POST':
         rendered = render_template('download_pdf.html', results=results, highest_paying_members=highest_paying_members)
 
@@ -95,11 +100,11 @@ def books(page_num):
                 flash("No such data!", category='error')
                 return render_template("search_result.html", search_result=search_result)
     else:
-        all_books = Book.query.paginate(per_page=20, page=page_num, error_out=True)
-        if all_books:
+        all_books = Book.query.paginate(per_page=20, page=page_num)
+        if all_books.has_next:
             return render_template('all_books.html', all_books=all_books)
         else:
-            flash("No Data to display, Please Add data to view here!")
+            flash("No books to display, Please import or add data to view here!", category='error')
             return render_template('all_books.html', all_books=all_books)
 
 
@@ -431,12 +436,12 @@ def insert_book(book):
 @app.route('/members/<int:page_num>', methods=['GET'])
 def members(page_num):
     if request.method == 'GET':
-        all_members = Member.query.paginate(per_page=20, page=page_num, error_out=True)
-        if all_members:
+        all_members = Member.query.paginate(per_page=20, page=page_num)
+        if all_members.has_next:
             return render_template('all_members.html', all_members=all_members)
         else:
-            flash('No member! Please Add member!')
-            return render_template('all_members.html')
+            flash('No member! Please add member!', category='error')
+            return render_template('all_members.html', all_members=all_members)
 
 
 @app.route('/member', methods=['GET', 'POST'])
@@ -503,8 +508,12 @@ def transactions(page_num):
                                                                                                        Transaction.issued_for_days,
                                                                                                        Transaction.rent).paginate(
         per_page=20, page=page_num)
-    if transactions_data:
+    if transactions_data.has_next:
         return render_template('transactions.html', transactions_data=transactions_data)
+    else:
+        flash('No transactions taken place yet!', category='error')
+        return render_template('transactions.html', transactions_data=transactions_data)
+
 
 
 # --------xx about page routes xx--------

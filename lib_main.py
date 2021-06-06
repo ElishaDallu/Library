@@ -45,7 +45,6 @@ def reports():
         "SELECT (SELECT member_fname FROM member WHERE id=member_id) as member_fame, SUM(rent) as rent FROM \"transaction\" WHERE status = 'returned' GROUP BY member_id ORDER BY rent DESC LIMIT 3"))
 
     if request.method == 'GET':
-        print(results.fetchone())
         if results.fetchone() is not None:
             return render_template('reports.html', results=results, highest_rating=highest_rating,
                                    tot_available_qty=tot_available_qty, highest_paying_members=highest_paying_members)

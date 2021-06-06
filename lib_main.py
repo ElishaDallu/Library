@@ -146,7 +146,7 @@ def import_books():
         else:
             no_of_books = 1
         import_book(title, authors, isbn, publisher, '', no_of_books)
-        flash('Books imported', category='success')
+        flash('Books imported!', category='success')
         return redirect(url_for('books', page_num=1))
     return render_template('import_books.html')
 
@@ -162,7 +162,7 @@ def import_all_books():
             page = page + 1
         else:
             data = False
-    flash('All Books Imported!!!', category='success')
+    flash('All Books Imported!', category='success')
     return redirect(url_for('books', page_num=1))
 
 
@@ -296,7 +296,7 @@ def delete_book(id):
         else:
             db.session.delete(book)
             db.session.commit()
-            flash('Book data deleted successfully!', category='error')
+            flash('Book deleted successfully!', category='error')
             return redirect(url_for('books', page_num=1))
 
 
@@ -310,7 +310,7 @@ def issue_book():
 
         member = Member.query.filter_by(member_fname=member_fname).filter_by(member_lname=member_lname).first()
         if member is None:
-            flash('Member does not exist, Please add member to issue book', category='error')
+            flash('Member does not exist, Please add member to issue book!', category='error')
             return render_template('issue_book.html', books=get_books())
         else:
             title_book = Book.query.get(int(title_id))
@@ -325,16 +325,16 @@ def issue_book():
                      Transaction.status == 'issued')).first()
 
             if not member:
-                flash('Invalid member data, Please enter a valid input', category='error')
+                flash('Invalid member data, Please enter a valid input!', category='error')
                 return render_template('issue_book.html', books=get_books())
             elif title_book.id != authors_book.id:
-                flash('Book does not exist, Please enter a valid input', category='error')
+                flash('Book does not exist, Please enter a valid input!', category='error')
                 return render_template('issue_book.html', books=get_books())
             elif debt >= 500:
-                flash('Please clear your outstanding debt to issue books', category='error')
+                flash('Please clear your outstanding debt to issue books!', category='error')
                 return render_template('issue_book.html', books=get_books())
             elif already_issued:
-                flash("Book Already Issued!", category="error")
+                flash("Book already issued!", category="error")
                 return render_template('issue_book.html', books=get_books())
             elif book.available_quantity == 0:
                 flash('Book is unavailable right now, Please come back later!')
@@ -345,7 +345,7 @@ def issue_book():
                 db.session.add(data)
                 title_book.available_quantity = title_book.available_quantity - 1
                 db.session.commit()
-                flash(f"Book Issued  to {member.member_fname} {member.member_lname}!", category='Success')
+                flash(f"Book issued  to {member.member_fname} {member.member_lname}!", category='Success')
                 return redirect(url_for('books', page_num=1))
 
     return render_template('issue_book.html', books=get_books())
@@ -399,7 +399,7 @@ class ReturnBook:
 def confirm_return():
     if request.method == 'POST':
         if not request.form.getlist("chk_bx"):
-            flash('Please check the box to return books')
+            flash('Please check the box to return books!')
         else:
             tran_ids = request.form.getlist("chk_bx")
             for id in tran_ids:
@@ -419,7 +419,7 @@ def confirm_return():
                 book.available_quantity = book.available_quantity + 1
                 db.session.commit()
 
-            flash('Book has been returned, Thank you...')
+            flash('Book has been returned, Thank you!')
             return redirect(url_for('books', page_num=1))
 
 
@@ -440,7 +440,7 @@ def members(page_num):
         if all_members.has_next:
             return render_template('all_members.html', all_members=all_members)
         else:
-            flash('No member! Please add member!', category='error')
+            flash('No member, Please add member!', category='error')
             return render_template('all_members.html', all_members=all_members)
 
 
@@ -513,7 +513,6 @@ def transactions(page_num):
     else:
         flash('No transactions taken place yet!', category='error')
         return render_template('transactions.html', transactions_data=transactions_data)
-
 
 
 # --------xx about page routes xx--------

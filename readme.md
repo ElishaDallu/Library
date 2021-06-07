@@ -63,7 +63,7 @@ Install the dependencies -  Flask
 
 Getting the Flask server running
 
-    cd library`
+    cd library
     python3 lib_main.py
 
 The production build is now running through the flask server on http://localhost:5000/

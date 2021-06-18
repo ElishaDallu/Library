@@ -127,13 +127,13 @@
                             <div class="container">
                                 <div class="row">
 
-                                  <div class="col-sm-10">
+                                  <div class="col-sm-12">
                                         <div class="row">
                                             <label>First Name</label>
-                                            <input type="text" class="form-control" name="member_fname" placeholder="First Name" autocomplete="off" required>
+                                            <input type="text" class="form-control" name="member_fname" placeholder="First Name" autocomplete="off" required><br>
 
                                             <label>Last Name</label>
-                                            <input type="text" class="form-control" name="member_lname" placeholder="Last Name" autocomplete="off" required>
+                                            <input type="text" class="form-control" name="member_lname" placeholder="Last Name" autocomplete="off" required><br>
 
                                             <div class="modal-footer">
                                                 <a href=""> <input type="Submit" value="List Issued Books" class="btn btn-outline-primary btn-sm"></a>&nbsp;
@@ -150,38 +150,38 @@
         </div>
 
         <!--Import Book Modal -->
-        <div class="modal fade" id="ImportBookModal" tabindex="-1" role="dialog" aria-labelledby="ImportBookModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="ImportBookModalLabel">Import Book</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="/import_book" method = "POST">
+<!--        <div class="modal fade" id="ImportBookModal" tabindex="-1" role="dialog" aria-labelledby="ImportBookModalLabel"-->
+<!--                    aria-hidden="true">-->
+<!--                    <div class="modal-dialog" role="document">-->
+<!--                        <div class="modal-content">-->
+<!--                            <div class="modal-header">-->
+<!--                                <h5 class="modal-title" id="ImportBookModalLabel">Import Book</h5>-->
+<!--                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--                                    <span aria-hidden="true">&times;</span>-->
+<!--                                </button>-->
+<!--                            </div>-->
+<!--                            <div class="modal-body">-->
+<!--                                <form action="/import_book" method = "POST">-->
 
-                                    <div class="container">
-                                        <div class="row">
+<!--                                    <div class="container">-->
+<!--                                        <div class="row">-->
 
-                                          <div class="col-sm-10">
-                                                <div class="row">
-                                                    <h4><label>Import All Books?</label></h4>
+<!--                                          <div class="col-sm-10">-->
+<!--                                                <div class="row">-->
+<!--                                                    <h4><label>Import All Books?</label></h4>-->
 
-                                                    <a href=""> <input type="Submit" value="Import" class="btn btn-outline-primary btn-sm"></a>&nbsp;
-                                                    <a href="/books/1" type="button" class="btn btn-outline-secondary btn-sm">Cancel</a>
-                                                    <small class="form-text text-muted">NOTE: This might take a moment.</small>
-                                                </div><hr>
-                                          </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<!--                                                    <a href=""> <input type="Submit" value="Import" class="btn btn-outline-primary btn-sm"></a>&nbsp;-->
+<!--                                                    <a href="/books/1" type="button" class="btn btn-outline-secondary btn-sm">Cancel</a>-->
+<!--                                                    <small class="form-text text-muted">NOTE: This might take a moment.</small>-->
+<!--                                                </div><hr>-->
+<!--                                          </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </form>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
     </main>
 
 

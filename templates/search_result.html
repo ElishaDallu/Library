@@ -39,7 +39,7 @@
             <th scope="col">Action</th>
         </tr>
         </thead>
-        {% for book in search_result %}
+        {% for book in search_result.items %}
         <tr>
             <td>{{book['id']}}</td>
             <td>{{book['title']}}</td>
@@ -73,18 +73,29 @@
                         <form action="/update_book/{{book['id']}}" method = "POST">
                             <div class="form-group">
                                 <label>Name</label>
-                                <input type="text" class="form-control" name=title value="{{book.title}}">
+                                <input type="text" class="form-control" name="title" minlength="3" maxlength="20" value="{{book.title}}" autocomplete="off">
 
                                 <label>Author</label>
-                                <input type="text" class="form-control" name="authors" value="{{book.authors}}">
+                                <input type="text" class="form-control" name="authors" minlength="3" maxlength="20" value="{{book.authors}}" autocomplete="off">
+
+                                <label>ISBN</label>
+                                <input type="number" class="form-control" name="isbn" value="{{book.isbn}}" autocomplete="off">
+
+                                <label>ISBN 13</label>
+                                <input type="number" class="form-control" name="isbn13" value="{{book.isbn13}}" autocomplete="off">
+
+                                <label>Number of Pages</label>
+                                <input type="number" class="form-control" name="num_pages" value="{{book.num_pages}}" autocomplete="off">
+
+                                <label>Publisher</label>
+                                <input type="text" class="form-control" name="publisher" minlength="3" maxlength="20" value="{{book.publisher}}" autocomplete="off">
 
                                 <label>Quantity</label>
-                                <input type="number" min="1" class="form-control" name="total_quantity" value="{{book.total_quantity}}">
+                                <input type="number" min="1" class="form-control" name="total_quantity" value="{{book.total_quantity}}" autocomplete="off">
                             </div>
-
                             <div class="modal-footer">
                                 <br>
-                                <a href=""> <input type="Submit" class="btn btn-outline-primary btn-sm"></a>
+                                <a href="#"> <input type="Submit" class="btn btn-outline-primary btn-sm"></a>
                                 <a href="/books/1" type="button" class="btn btn-outline-secondary btn-sm">Cancel</a>
                             </div>
                         </form>
@@ -147,5 +158,17 @@
         {% endfor %}
     </table>
     {% endif %}
+        <div class="text-right">
+      {% for page in search_result.iter_pages(left_edge=3, right_edge=3, left_current=3, right_current=3) %}
+        {% if page %}
+          <a class="btn btn-outline-dark btn-sm" href="{{ url_for('books', page_num=page) }}">{{ page }}</a>
+        {% else %}
+          ...
+        {% endif %}
+      {% endfor %}
+        <p class="text-right mt-3">
+            Showing page {{ search_result.page }} of {{ search_result.pages }}
+        </p>
+    </div>
 </div>
 {% endblock %}

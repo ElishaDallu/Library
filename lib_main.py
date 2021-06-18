@@ -71,7 +71,7 @@ def books(page_num):
         if request.form['title']:
             title = request.form['title'].strip()
             search_title = f"%{title}%"
-            search_result = Book.query.filter(Book.title.like(search_title)).all()
+            search_result = Book.query.filter(Book.title.like(search_title)).paginate(per_page=20, page=page_num)
             if search_result:
                 return render_template("search_result.html", search_result=search_result)
             else:
@@ -80,7 +80,7 @@ def books(page_num):
         elif request.form['authors']:
             authors = request.form['authors'].strip()
             search_authors = f"%{authors}%"
-            search_result = Book.query.filter(Book.authors.like(search_authors)).all()
+            search_result = Book.query.filter(Book.authors.like(search_authors)).paginate(per_page=20, page=page_num)
             if search_result:
                 return render_template("search_result.html", search_result=search_result)
             else:
@@ -92,7 +92,7 @@ def books(page_num):
             search_title = f"%{title}%"
             search_authors = f"%{authors}%"
             search_result = Book.query.filter(
-                and_(Book.title.like(search_title), Book.authors.like(search_authors))).all()
+                and_(Book.title.like(search_title), Book.authors.like(search_authors))).paginate(per_page=20, page=page_num)
             if search_result:
                 return render_template("search_result.html", search_result=search_result)
             else:
@@ -203,11 +203,11 @@ def import_book(title=None, authors=None, isbn=None, publisher=None, page=None, 
                             publisher=book['publisher'].strip())
 
             # validating isbn
-            if isValueIsbn(book['isbn'].strip()):
+            if isValueIsbn(book['isbn']):
                 api_book.is_valid = True
             else:
                 api_book.is_valid = False
-                api_book.reason = "Invalid Isbn..."
+                api_book.reason = "Invalid Isbn"
 
             imported_books.append(api_book)
             db.session.add_all(imported_books)
@@ -301,19 +301,20 @@ def delete_book(id):
 
 @app.route('/issue_book', methods=['GET', 'POST'])
 def issue_book():
-    if request.method == 'POST':
-        member_fname = request.form['member_fname'].strip()
-        member_lname = request.form['member_lname'].strip()
-        title_id = request.form['title_id']
-        authors_id = request.form['authors_id']
+    if request.method == 'GET':
+        all_members = Member.query.all()
+        all_books = Book.query.filter_by(is_valid=True).all()
+        return render_template('issue_book.html', books=all_books, all_members=all_members)
 
-        member = Member.query.filter_by(member_fname=member_fname).filter_by(member_lname=member_lname).first()
+    if request.method == 'POST':
+        member_id = request.form['member_id']
+        title_id = request.form['title_id']
+
+        member = Member.query.filter_by(id=member_id).first()
         if member is None:
             flash('Member does not exist, Please add member to issue book!', category='error')
             return render_template('issue_book.html', books=get_books())
         else:
-            title_book = Book.query.get(int(title_id))
-            authors_book = Book.query.get(int(authors_id))
             book = Book.query.filter_by(id=title_id).first()
 
             data = fetch_books_by_member_id(member.id)
@@ -326,9 +327,6 @@ def issue_book():
             if not member:
                 flash('Invalid member data, Please enter a valid input!', category='error')
                 return render_template('issue_book.html', books=get_books())
-            elif title_book.id != authors_book.id:
-                flash('Book does not exist, Please enter a valid input!', category='error')
-                return render_template('issue_book.html', books=get_books())
             elif debt >= 500:
                 flash('Please clear your outstanding debt to issue books!', category='error')
                 return render_template('issue_book.html', books=get_books())
@@ -339,15 +337,13 @@ def issue_book():
                 flash('Book is unavailable right now, Please come back later!')
                 return render_template('issue_book.html', books=get_books())
             else:
-                data = Transaction(book_id=title_book.id, member_id=member.id, status='issued',
+                data = Transaction(book_id=book.id, member_id=member.id, status='issued',
                                    issue_date=datetime.utcnow())
                 db.session.add(data)
-                title_book.available_quantity = title_book.available_quantity - 1
+                book.available_quantity = book.available_quantity - 1
                 db.session.commit()
                 flash(f"Book issued  to {member.member_fname} {member.member_lname}!", category='Success')
                 return redirect(url_for('books', page_num=1))
-
-    return render_template('issue_book.html', books=get_books())
 
 
 @app.route('/return_book', methods=['POST'])
@@ -371,6 +367,7 @@ def fetch_books_by_member_id(id):
     if id:
         issued_books_data = Transaction.query.filter_by(member_id=id).filter_by(status='issued').all()
         for trans in issued_books_data:
+            print(trans.book_id)
             book_data = Book.query.filter_by(id=trans.book_id).filter_by(is_valid=True).first()
             issue_for_days = datetime.utcnow().day - trans.issue_date.day
             if issue_for_days == 0:
@@ -507,7 +504,7 @@ def transactions(page_num):
                                                                                                        Transaction.issued_for_days,
                                                                                                        Transaction.rent).paginate(
         per_page=20, page=page_num)
-    if transactions_data.has_next:
+    if len(transactions_data.items) != 0:
         return render_template('transactions.html', transactions_data=transactions_data)
     else:
         flash('No transactions taken place yet!', category='error')
